@@ -4,12 +4,12 @@ namespace DMNSN.Net.NmapScanner.Models
 {
     public class SubnetModel
     {
-        private string BaseAddress { get; set; } = string.Empty;
+        private string NetworkAddress { get; set; } = string.Empty;
         private int NetMask { get; set; } = 24;
 
         public SubnetModel(string baseAddress, int netMask = 24)
         {
-            BaseAddress = baseAddress;
+            NetworkAddress = baseAddress;
             NetMask = netMask;
             if (netMask < 0 || netMask > 32)
             {
@@ -23,12 +23,12 @@ namespace DMNSN.Net.NmapScanner.Models
 
         public string GetSubnetAddress()
         {
-            return $"{BaseAddress}/{NetMask}";
+            return $"{NetworkAddress}/{NetMask}";
         }
 
         public string GetStartAddress()
         {
-            var baseAddressBytes = IPAddress.Parse(BaseAddress).GetAddressBytes();
+            var baseAddressBytes = IPAddress.Parse(NetworkAddress).GetAddressBytes();
             var maskBytes = GetMaskBytes(NetMask);
             var startAddressBytes = new byte[4];
 
@@ -44,7 +44,7 @@ namespace DMNSN.Net.NmapScanner.Models
 
         public string GetEndAddress()
         {
-            var baseAddressBytes = IPAddress.Parse(BaseAddress).GetAddressBytes();
+            var baseAddressBytes = IPAddress.Parse(NetworkAddress).GetAddressBytes();
             var maskBytes = GetMaskBytes(NetMask);
             var endAddressBytes = new byte[4];
 
@@ -60,7 +60,7 @@ namespace DMNSN.Net.NmapScanner.Models
 
         private bool ValidateBaseAddress()
         {
-            return IPAddress.TryParse(BaseAddress, out _);
+            return IPAddress.TryParse(NetworkAddress, out _);
         }
 
         private byte[] GetMaskBytes(int netMask)

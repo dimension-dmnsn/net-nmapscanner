@@ -37,7 +37,7 @@ namespace DMNSN.Net.NmapScanner.xUnit
             var localIP = GetLocalIPAddress();
             var networkAddress = GetNetworkAddress(localIP.Address, localIP.IPv4Mask);
             var netMask = GetSubnetMaskLength(localIP.IPv4Mask);
-            SubnetModel subnetModel = new SubnetModel(networkAddress, netMask);
+            var subnetModel = new SubnetModel(networkAddress, netMask);
 
             // Act
             var devices = scanner.GetOnlineDevices(subnetModel);
@@ -99,18 +99,6 @@ namespace DMNSN.Net.NmapScanner.xUnit
                 b >>= 1;
             }
             return count;
-        }
-        private byte[] GetWildcardBytes(IPAddress subnetMask)
-        {
-            byte[] maskBytes = subnetMask.GetAddressBytes();
-            byte[] wildcardBytes = new byte[maskBytes.Length];
-
-            for (int i = 0; i < maskBytes.Length; i++)
-            {
-                wildcardBytes[i] = (byte)~maskBytes[i];
-            }
-
-            return wildcardBytes;
         }
     }
 }
