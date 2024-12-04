@@ -35,9 +35,9 @@ namespace DMNSN.Net.NmapScanner
             logger.LogDebug("NmapScanner initialized");
         }
 
-        public List<DeviceEntityModel> GetOnlineDevices(SubnetModel subnet)
+        public List<DeviceModel> GetOnlineDevices(SubnetModel subnet)
         {
-            var onlineDevices = new List<DeviceEntityModel>();
+            var onlineDevices = new List<DeviceModel>();
             namp.StartInfo.Arguments = $"-sn {subnet.GetSubnetAddress()}";
             namp.Start();
             var output = namp.StandardOutput.ReadToEnd();
@@ -48,7 +48,7 @@ namespace DMNSN.Net.NmapScanner
 
             foreach (Match match in matches)
             {
-                var device = new DeviceEntityModel()
+                var device = new DeviceModel()
                 {
                     IpAddress = match.Groups["ip"].Value,
                     MacAddress = match.Groups["mac"].Success ? match.Groups["mac"].Value : null,
@@ -60,9 +60,9 @@ namespace DMNSN.Net.NmapScanner
             return onlineDevices;
         }
 
-        public List<DeviceEntityModel> GetOnlineDevices(List<SubnetModel> subnets)
+        public List<DeviceModel> GetOnlineDevices(List<SubnetModel> subnets)
         {
-            var onlineDevices = new List<DeviceEntityModel>();
+            var onlineDevices = new List<DeviceModel>();
             foreach (var subnet in subnets)
             {
                 onlineDevices.AddRange(GetOnlineDevices(subnet));
