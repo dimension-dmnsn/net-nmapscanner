@@ -7,10 +7,12 @@ namespace DMNSN.Net.NmapScanner
 {
     public partial class NmapScanner
     {
-        [GeneratedRegex(@"Nmap scan report for (?<hostname>[^\s]+) \((?<ip>\d+\.\d+\.\d+\.\d+)\)\n.*\n.*MAC Address: (?<mac>[0-9A-Fa-f:]+)", RegexOptions.Multiline)]
+        [GeneratedRegex(@"Nmap scan report for (?:(?<hostname>[^\s]+) \()?(?<ip>\d+\.\d+\.\d+\.\d+)\)?\r?\n.*\r?\n(?:.*MAC Address: (?<mac>[0-9A-Fa-f:]+))?", RegexOptions.Multiline)]
         private static partial Regex NmapRegex();
+
         private readonly Process namp;
         private readonly ILogger<NmapScanner> logger;
+
         public NmapScanner(ILogger<NmapScanner> _logger)
         {
             logger = _logger;
@@ -49,8 +51,8 @@ namespace DMNSN.Net.NmapScanner
                 var device = new DeviceEntityModel()
                 {
                     IpAddress = match.Groups["ip"].Value,
-                    MacAddress = match.Groups["mac"].Value,
-                    HostName = match.Groups["hostname"].Value
+                    MacAddress = match.Groups["mac"].Success ? match.Groups["mac"].Value : null,
+                    HostName = match.Groups["hostname"].Success ? match.Groups["hostname"].Value : null
                 };
                 onlineDevices.Add(device);
             }
@@ -68,7 +70,7 @@ namespace DMNSN.Net.NmapScanner
             return onlineDevices;
         }
 
-        private bool IsNmapInstalled()
+        public bool IsNmapInstalled()
         {
             try
             {
@@ -82,6 +84,5 @@ namespace DMNSN.Net.NmapScanner
                 return false;
             }
         }
-
     }
 }
